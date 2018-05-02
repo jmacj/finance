@@ -16,6 +16,9 @@ public class Finance {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        MainPage app = new MainPage();
+        
+        app.main(args);
     }
     
 }
