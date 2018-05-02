@@ -16,15 +16,20 @@ public class PersonController {
     
     BaseModel personModel = new BaseModel("TBL_PERSON");
     
+    public PersonController() {
+        
+        personModel = new BaseModel("TBL_PERSON");
+    }
+    
     public String createPerson(String[] data) {
         String[] personData = new String[6];
         for(int i = 0; i < 6; i++) {
             if(i == 0)
-                personData[i] = RandomStringUtils.randomAlphanumeric(11);
+                personData[i] = "'" + RandomStringUtils.randomAlphanumeric(11) + "'";
             else
-                personData[i] = data[i-1];
+                personData[i] = "'" + data[i-1] + "'";
         }
-        personModel.insert(data);
+        personModel.insert(personData);
         
         return personData[0];
     }

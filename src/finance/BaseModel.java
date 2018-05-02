@@ -18,11 +18,12 @@ import java.sql.Statement;
  */
 public class BaseModel {
     
-    private static String _database = "jdbc:derby://localhost:1527/FINANCE;create=true;user=finance;password=department;";
-    private static String _tableName;
-    private static String primary_key = "ID";
-    private static Connection conn = null;
-    private static Statement stmt = null;
+    protected static String _database = "jdbc:derby://localhost:1527/FINANCE;create=true;user=finance;password=department;";
+    protected static String _tableName = "";
+    protected static String primary_key = "ID";
+    protected static Connection conn = null;
+    protected static Statement stmt = null;
+    protected static Statement stmt2 = null;
     
     public BaseModel() {
         
@@ -68,19 +69,22 @@ public class BaseModel {
         String[][] data = null;
         try {
            stmt = conn.createStatement();
+           stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+        ResultSet.CONCUR_UPDATABLE);
            ResultSet results = stmt.executeQuery("SELECT * FROM " + this._tableName);
-           ResultSet count = stmt.executeQuery("SELECT * FROM " + this._tableName);
+           ResultSet count = stmt2.executeQuery("SELECT * FROM " + this._tableName);
            count.last();
            ResultSetMetaData rsmd = results.getMetaData();
            data = new String [count.getRow()][rsmd.getColumnCount()];
            while(results.next()){
                
-               for(int col = 0; col < rsmd.getColumnCount(); col++)
-                   data[results.getRow() - 1][col] = results.getString(col);
+               for(int col = 1; col <= rsmd.getColumnCount(); col++)
+                   data[results.getRow()-1][col-1] = results.getString(col);
            }
            results.close();
            count.close();
            stmt.close();
+           stmt2.close();
            
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -104,8 +108,8 @@ public class BaseModel {
            data = new String [rsmd.getColumnCount()];
            while(results.next()){
                
-               for(int col = 0; col < rsmd.getColumnCount(); col++)
-                   data[col] = results.getString(col);
+               for(int col = 1; col < rsmd.getColumnCount(); col++)
+                   data[col-1] = results.getString(col);
            }
            results.close();
            stmt.close();
@@ -134,8 +138,8 @@ public class BaseModel {
            data = new String [count.getRow()][rsmd.getColumnCount()];
            while(results.next()){
                
-               for(int col = 0; col < rsmd.getColumnCount(); col++)
-                   data[results.getRow() - 1][col] = results.getString(col);
+               for(int col = 1; col < rsmd.getColumnCount(); col++)
+                   data[results.getRow() - 1][col-1] = results.getString(col);
            }
            results.close();
            count.close();

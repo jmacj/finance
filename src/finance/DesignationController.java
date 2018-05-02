@@ -23,9 +23,9 @@ public class DesignationController {
         designationModel.update(primary_value, keys, values);
     }
     
-    public void getAllDesignations(){
+    public String[][] getAllDesignation(){
         
-        designationModel.get_all();
+        return designationModel.get_all();
     }
     
     public void deleteDesignation(String primary_value) {
@@ -33,4 +33,8 @@ public class DesignationController {
         designationModel.delete(primary_value);
     }
     
+    public String[] getDesignationBy(String[] args) {
+        
+        return designationModel.get_by(args);
+    }
 }

@@ -11,7 +11,7 @@ package finance;
  */
 public class TeacherController extends PersonController{
     
-    BaseModel teacherModel = new BaseModel("TBL_TEACHER");
+    TeacherModel teacherModel = new TeacherModel();
     
     /*
      * data[0] first_name
@@ -20,20 +20,31 @@ public class TeacherController extends PersonController{
      *     [3] phone_number
      *     [4] address
      *     [5] designation_id
-     *
+     *     [6] department_id
      */
     public void createTeacher(String[] data) {
         
-        String dataPerson[] = new String[6];
+        PersonController pc = new PersonController();
+        String dataPerson[] = new String[7];
         for(int i = 0; i < 5; i++) {
             dataPerson[i] = data[i];
         }
         String dataTeacher[] = new String[3];
-        dataTeacher[0] = this.createPerson(dataPerson);
-        dataTeacher[1] = data[5];
-        dataTeacher[2] = "0"; // hours_rendered
+        dataTeacher[0] = pc.createPerson(dataPerson);
         
-        teacherModel.insert(dataTeacher);
+        
+        DesignationController dc = new DesignationController();
+        String[] designation, department;
+        designation = dc.getDesignationBy(new String[] {"name", data[5]});
+        
+        DepartmentController depC = new DepartmentController();
+        department = depC.getDepartmentBy(new String[] {"name", data[6]});
+        
+        dataTeacher[1] = "'" + designation[0] + "'";
+        dataTeacher[2] = "'" + department[0] +  "'";
+        int hours_rendered = 0;
+        
+        teacherModel.insert(dataTeacher, hours_rendered);
     }
     
     public void updateTeacher(String primary_value, String[] keys, String[] values) {

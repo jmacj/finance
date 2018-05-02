@@ -23,13 +23,17 @@ public class DepartmentController {
         departmentModel.update(primary_value, values, values);
     }
     
-    public void getAllDepartment() {
+    public String[][] getAllDepartment() {
         
-        departmentModel.get_all();
+        return departmentModel.get_all();
     }
     
     public void deleteDepartment(String primary_value) {
         
         departmentModel.delete(primary_value);
+    }
+
+    public String[] getDepartmentBy(String[] string) {
+        return departmentModel.get_by(string);
     }
 }
