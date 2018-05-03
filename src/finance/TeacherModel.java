@@ -13,7 +13,11 @@ import java.sql.SQLException;
  */
 public class TeacherModel extends BaseModel{
     
-    protected String _tableName = "TBL_TEACHER";
+    protected static String _tableName = "TBL_TEACHER";
+    
+    public TeacherModel() {
+        super.__construct(_tableName);
+    }
     
     public void insert(String[] data, int hrs_rendered) {
         
@@ -29,7 +33,7 @@ public class TeacherModel extends BaseModel{
             sql += hrs_rendered;
             
             sql += ")";
-            System.out.print(sql);
+            
             stmt.execute(sql);
             stmt.close();
         } catch (SQLException ex) {

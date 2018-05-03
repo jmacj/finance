@@ -108,7 +108,7 @@ public class BaseModel {
            data = new String [rsmd.getColumnCount()];
            while(results.next()){
                
-               for(int col = 1; col < rsmd.getColumnCount(); col++)
+               for(int col = 1; col <= rsmd.getColumnCount(); col++)
                    data[col-1] = results.getString(col);
            }
            results.close();
@@ -131,14 +131,16 @@ public class BaseModel {
         
         try {
            stmt = conn.createStatement();
+           stmt2 = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+        ResultSet.CONCUR_UPDATABLE);
            ResultSet results = stmt.executeQuery("SELECT * FROM " + this._tableName + " WHERE " + args[0] + " = '" + args[1] + "'");
-           ResultSet count = stmt.executeQuery("SELECT * FROM " + this._tableName + " WHERE " + args[0] + " = '" + args[1] + "'");
+           ResultSet count = stmt2.executeQuery("SELECT * FROM " + this._tableName + " WHERE " + args[0] + " = '" + args[1] + "'");
            count.last();
            ResultSetMetaData rsmd = results.getMetaData();
            data = new String [count.getRow()][rsmd.getColumnCount()];
            while(results.next()){
                
-               for(int col = 1; col < rsmd.getColumnCount(); col++)
+               for(int col = 1; col <= rsmd.getColumnCount(); col++)
                    data[results.getRow() - 1][col-1] = results.getString(col);
            }
            results.close();

@@ -11,15 +11,15 @@ package finance;
  */
 public class SalaryVariableController {
     
-    BaseModel SalValModel = new BaseModel("TBL_SALARY_VARIABLE");
-    
+    SalVarModel salVarModel = new SalVarModel();
+        
     public void createSalVal(String[] data) {
         
-        SalValModel.insert(data);
+        salVarModel.insert(data);
     }
     
-    public void getAllSalVal() {
+    public double[] getAllSalVal() {
         
-        SalValModel.get_all();
+        return salVarModel.get();
     }
 }

@@ -5,6 +5,8 @@
  */
 package finance;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Jan
@@ -51,6 +53,44 @@ public class TeacherController extends PersonController{
         
         teacherModel.update(primary_value, keys, values);
     }
+    /*
+     * [0] id             [6] designation     [9] ot_hrs
+     * [1] first_name     [7] department      [10] base_sal
+     * [2] last_name      [8] hrs_rendered    [11] ot_pay
+     * [3] gender                             [12] total_sal
+     * [4] phone_number                       [13] ha
+     * [5] address                            [14] ma
+     *                                        [15] ta
+     *                                        [16] net_sal
+    */
+    public String[] getTeacher(String primary_value) {
+        
+        String[] data = new String[17], person = new String[5], teacher = new String[4], salary = new String[8];
+        
+        teacher = teacherModel.get(primary_value);
+     
+        PersonController pc = new PersonController();
+        person = pc.getPerson(primary_value);
+        
+        salary = this.getSalary(teacher[1], teacher[3]);
+        for (int i = 0; i < data.length; i++){
+            if(i < 6)
+                data[i] = person[i];
+            if(i >= 6 && i < 9)
+                data[i] = teacher[i-5];
+            if(i >= 9)
+                data[i] = salary[i-9];
+        }
+        
+        BaseModel dm = new BaseModel("TBL_DESIGNATION");
+        data[6] = dm.get(data[6])[1];
+        BaseModel de = new BaseModel("TBL_DEPARTMENT");
+        data[7] = de.get(data[7])[1];
+        
+        return data;
+        
+        
+    }
     
     public void getAllTeacher() {
         
@@ -60,5 +100,52 @@ public class TeacherController extends PersonController{
     public void deleteTeacher(String primary_value) {
         
         teacherModel.delete(primary_value);
+    }
+    
+    /*
+     * data[0] = OT_HRS               
+     * data[1] = BASE_SALARY           var[0] = base_sal
+     * data[2] = OT_PAY                var[1] = ot_rate
+     * data[3] = TOTAL_SALARY
+     * data[4] = HOUSING_ALLOWANCE     var[2] = ha_rate
+     * data[5] = MEDICAL_ALLOWANCE     var[3] = ma_rate
+     * data[6] = TRAVEL_ALLOWANCE      var[4] = ta_rate
+     * data[7] = NET_SALARY
+     */
+    public String[] getSalary(String designation, String hrs) {
+        
+       double[] data = new double[8];
+       String[] strData = new String[8];
+        
+        int required_hrs = 0, rendered_hrs = Integer.parseInt(hrs);
+        int ot_hrs;
+        switch(designation){
+            case "HEADOFFACUL": required_hrs = 8; break;
+            case "COORDINATOR": required_hrs = 13; break;
+            case "LECTURER123": required_hrs = 18; break;
+        }
+        
+        ot_hrs = rendered_hrs - required_hrs;
+        SalaryVariableController svc = new SalaryVariableController();
+        
+        double[] var = svc.getAllSalVal();
+        if(rendered_hrs >= required_hrs){
+            data[0] = rendered_hrs > required_hrs ? Double.parseDouble(Integer.toString(ot_hrs)) : 0.0;
+            data[1] = var[0];
+            data[2] = data[0] * var[1];
+            data[3] = data[1] + data[2];
+            data[4] = data[3] * var[2];
+            data[5] = data[3] * var[3];
+            data[6] = data[3] * var[4];
+            data[7] = 0.0;
+            for(int i = 3; i < 7; i++)
+                data[7] += data[i];
+        }
+        strData[0] = Integer.toString(ot_hrs);
+        for(int i = 1; i < strData.length; i++){
+            
+            strData[i] = Double.toString(data[i]);
+        }
+        return strData;
     }
 }

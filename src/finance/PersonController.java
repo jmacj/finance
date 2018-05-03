@@ -40,9 +40,9 @@ public class PersonController {
         personModel.update(id, keys, values);
     }
     
-    public void getPerson(String id) {
+    public String[] getPerson(String id) {
         
-        personModel.get(id);
+        return personModel.get(id);
     }
     
     public void deletePerson(String id) {
