@@ -17,14 +17,34 @@ public class StudentController extends PersonController{
     public void createStudent(String[] data) {
                
         String[] dataStudent = new String[1];
-        dataStudent[0] = this.createPerson(data);
+        PersonController pc = new PersonController();
+        dataStudent[0] = pc.createPerson(data);
         
+        studentModel = new BaseModel("TBL_STUDENT");
         studentModel.insert(dataStudent);   
     }
     
-    public void getStudent(String primary_value) {
+    public String[][] getAllStudent(){
+        String[][] student, data;
+        student = studentModel.get_all();
+        data = new String[student.length][9];
         
-        studentModel.get(primary_value);
+        for(int i = 0; i < student.length; i++) {
+            PersonController pc = new PersonController();
+            String[] temp = pc.getPerson(student[i][0]);
+            
+            for(int j = 0; j < temp.length; j++) {          
+                data[i][j] = temp[j];
+            }
+        }
+        
+        return data;
+    }
+    
+    public String[] getStudent(String primary_value) {
+        PersonController pc = new PersonController();
+        return pc.getPerson(primary_value);
+//        studentModel.get(primary_value);
     }
     
     public void updateStudent(String primary_value, String[] keys, String[] values) {
