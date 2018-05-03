@@ -37,10 +37,10 @@ public class TeacherController extends PersonController{
         
         DesignationController dc = new DesignationController();
         String[] designation, department;
-        designation = dc.getDesignationBy(new String[] {"name", data[5]});
+        designation = dc.getDesignationBy(new String[] {"NAME", data[5]});
         
         DepartmentController depC = new DepartmentController();
-        department = depC.getDepartmentBy(new String[] {"name", data[6]});
+        department = depC.getDepartmentBy(new String[] {"NAME", data[6]});
         
         dataTeacher[1] = "'" + designation[0] + "'";
         dataTeacher[2] = "'" + department[0] +  "'";
@@ -49,9 +49,29 @@ public class TeacherController extends PersonController{
         teacherModel.insert(dataTeacher, hours_rendered);
     }
     
-    public void updateTeacher(String primary_value, String[] keys, String[] values) {
+    public void updateTeacher(String[] data) {
         
-        teacherModel.update(primary_value, keys, values);
+        DesignationController dc = new DesignationController();
+        String[] designation, department;
+        designation = dc.getDesignationBy(new String[] {"NAME", data[6]});
+        
+        DepartmentController depC = new DepartmentController();
+        department = depC.getDepartmentBy(new String[] {"NAME", data[7]});
+        
+        String[] keysTeacher = new String[] {"DESIGNATION_ID", "DEPARTMENT_ID"},
+                 valTeacher = new String[] {"'" + designation[0] + "'", "'" + department[0] + "'"};
+        
+        teacherModel.__construct(teacherModel._tableName);
+        teacherModel.update(data[0], keysTeacher, valTeacher);
+        
+        for(int i = 1; i < 6; i++)
+            data[i] = "'" + data[i] + "'";
+        PersonController pc = new PersonController();
+        String[] keysPerson = new String[] { "FIRST_NAME", "LAST_NAME", "GENDER", "PHONE_NUMBER", "ADDRESS" },
+                 valPerson = new String[] { data[1], data[2], data[3], data[4], data[5]};
+        
+        pc.updatePerson(data[0], keysPerson, valPerson);
+        
     }
     /*
      * [0] id             [6] designation     [9] ot_hrs

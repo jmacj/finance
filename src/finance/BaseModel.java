@@ -186,6 +186,7 @@ public class BaseModel {
             }
             
             sql += " WHERE " + this.primary_key + " = '" + primary_value + "'"; 
+            System.out.print(sql);
             stmt.executeUpdate(sql);
             stmt.close();
         } catch (SQLException ex) {
