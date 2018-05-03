@@ -112,9 +112,57 @@ public class TeacherController extends PersonController{
         
     }
     
-    public void getAllTeacher() {
+    public String[][] getAllTeacher() {
+
+        String[][] teacher, data;
+        teacher = teacherModel.get_all();
+        data = new String[teacher.length][9];
         
-        teacherModel.get_all();
+        for(int i = 0; i < teacher.length; i++) {
+            PersonController pc = new PersonController();
+            String[] temp = pc.getPerson(teacher[i][0]);
+            
+            for(int j = 0; j < temp.length; j++) {          
+                data[i][j] = temp[j];
+            }
+            BaseModel dm = new BaseModel("TBL_DESIGNATION");
+            data[i][temp.length] = dm.get(teacher[i][1])[1];
+            BaseModel de = new BaseModel("TBL_DEPARTMENT");        
+            data[i][temp.length+1] = de.get(teacher[i][2])[1];
+            data[i][temp.length+2] = teacher[i][3];
+        }
+        
+        return data;
+    }
+    
+    public void updateHour(String id, String hrs) {
+        teacherModel = new TeacherModel();
+        teacherModel.update(id, new String[] {"HOURS_RENDERED"}, new String[] {hrs});
+    }
+    
+    public String[][] getManyTeacherBy(String key) {
+        String[][] teacher, data;
+        BaseModel dp = new BaseModel("TBL_DEPARTMENT");
+        String arg = dp.get_by(new String[] { "NAME", key})[0];
+        teacherModel = new TeacherModel();
+        teacher = teacherModel.get_many_by(new String[] {"DEPARTMENT_ID", arg});
+        data = new String[teacher.length][9];
+        
+        for(int i = 0; i < teacher.length; i++) {
+            PersonController pc = new PersonController();
+            String[] temp = pc.getPerson(teacher[i][0]);
+            
+            for(int j = 0; j < temp.length; j++) {          
+                data[i][j] = temp[j];
+            }
+            BaseModel dm = new BaseModel("TBL_DESIGNATION");
+            data[i][temp.length] = dm.get(teacher[i][1])[1];
+            BaseModel de = new BaseModel("TBL_DEPARTMENT");        
+            data[i][temp.length+1] = de.get(teacher[i][2])[1];
+            data[i][temp.length+2] = teacher[i][3];
+        }
+        
+        return data;
     }
     
     public void deleteTeacher(String primary_value) {
